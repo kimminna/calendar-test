@@ -1,20 +1,22 @@
-import { useState } from "react";
+type Props = {
+  date: Date | null;
+  onAdd: (file: File) => void;
+};
 
-export default function TicketModal() {
-  const [imageFile, setImageFile] = useState<File | null>(null);
+export default function TicketModal({ date, onAdd }: Props) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setImageFile(file);
+      onAdd(file);
     }
   };
   return (
-    <div className=" flex flex-col w-full h-[400px] bg-gray-100 p-5 items-center gap-10 ">
+    <div className=" flex flex-col w-full h-[255px] bg-gray-100 p-5 items-center gap-10 ">
       <header>티켓 추가</header>
       <div className="flex flex-row gap-10">
         {/* 이미지 검색 */}
         <div className="flex flex-col items-center gap-5 ">
-          <div className="w-[150px] h-[150px] bg-gray-300  cursor-pointer"></div>
+          <div className="w-[100px] h-[100px] bg-gray-300  cursor-pointer"></div>
           <div>이미지 검색하기</div>
         </div>
 
@@ -22,7 +24,7 @@ export default function TicketModal() {
         <div className="flex flex-col items-center gap-5">
           <label
             htmlFor="fileInput"
-            className="w-[150px] h-[150px] bg-gray-300  cursor-pointer"
+            className="w-[100px] h-[100px] bg-gray-300  cursor-pointer"
           ></label>
           <input
             type="file"
@@ -36,7 +38,7 @@ export default function TicketModal() {
 
         {/* 직접 사진 촬영 */}
         <div className="flex flex-col items-center gap-5">
-          <div className="w-[150px] h-[150px] bg-gray-300  cursor-pointer"></div>
+          <div className="w-[100px] h-[100px] bg-gray-300  cursor-pointer"></div>
           <div>사진 촬영</div>
         </div>
       </div>
