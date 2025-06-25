@@ -1,10 +1,13 @@
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import { format, parse, startOfWeek, getDay } from "date-fns";
 import { ko } from "date-fns/locale";
+import "react-datepicker/dist/react-datepicker.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import type { ToolbarProps } from "react-big-calendar";
+import type { MyEvent } from "../types/event";
 import { useState } from "react";
 import TicketModal from "./TicketModal";
+import { CustomToolbar } from "./CustomToolbar";
 
 const locales = {
   ko: ko,
@@ -18,52 +21,18 @@ const localizer = dateFnsLocalizer({
   locale: ko,
 });
 
-type CustomToolbarProps = ToolbarProps<MyEvent> & {
-  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setSelectedDate: React.Dispatch<React.SetStateAction<Date | null>>;
-};
-
-type MyEvent = {
-  start: Date;
-  end: Date;
-  title: string;
-  poster?: string; // 이미지 URL
-};
-
-const CustomToolbar = ({
-  date,
-  setIsModalOpen,
-  setSelectedDate,
-}: CustomToolbarProps) => {
-  const label = format(date, "yyyy년 M월", { locale: ko });
-
-  return (
-    <div className="flex items-center text-center flex-row font-semibold justify-between p-4">
-      <div className="mr-[400px]">{label}</div>
-      <button
-        className="w-8 h-8 border-[1.5px] border-black text-center rounded-full"
-        onClick={() => {
-          setSelectedDate(new Date());
-          setIsModalOpen((prev) => !prev);
-        }}
-      >
-        +
-      </button>
-      <button className="w-16 h-8 border-[1.5px] border-black text-center rounded-full">
-        오늘
-      </button>
-    </div>
-  );
-};
 export default function MyCalendar() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [events, setEvents] = useState<MyEvent[]>([]);
+  const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   return (
     <div className="w-full h-full bg-gray-100 flex justify-center items-center">
       <div className="w-[678px] h-[1488px] max-w-full bg-white shadow-lg [&_.rbc-today]:bg-transparent [&_.rbc-event]:bg-transparent [&_.rbc-month-row]:min-h-[130px] flex flex-col">
         <Calendar
+          date={currentDate}
+          onNavigate={(newDate) => setCurrentDate(newDate)}
           localizer={localizer}
           startAccessor="start"
           endAccessor="end"
@@ -71,6 +40,10 @@ export default function MyCalendar() {
             toolbar: (props: ToolbarProps<MyEvent>) => (
               <CustomToolbar
                 {...props}
+                date={currentDate}
+                onNavigate={(action, newDate) =>
+                  newDate && setCurrentDate(newDate)
+                }
                 setIsModalOpen={setIsModalOpen}
                 setSelectedDate={setSelectedDate}
               />
@@ -105,7 +78,7 @@ export default function MyCalendar() {
         {isModalOpen && (
           <div className="w-full">
             <TicketModal
-              date={selectedDate}
+              date={currentDate}
               onAdd={(file) => {
                 const url = URL.createObjectURL(file);
                 setEvents((prev) => [
