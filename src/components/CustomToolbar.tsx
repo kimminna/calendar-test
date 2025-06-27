@@ -1,6 +1,7 @@
 import DatePicker from "react-datepicker";
 import { ko } from "date-fns/locale";
 import type { CustomToolbarProps } from "../types/calendar";
+import { useState } from "react";
 
 export const CustomToolbar = ({
   date,
@@ -8,6 +9,7 @@ export const CustomToolbar = ({
   setIsModalOpen,
   setSelectedDate,
 }: CustomToolbarProps) => {
+  const [isDropDownOpen, setIsDropDownOpen] = useState<boolean>(false);
   const handleDateChange = (selectedDate: Date | null) => {
     if (selectedDate) {
       const newDate = new Date(
@@ -24,12 +26,15 @@ export const CustomToolbar = ({
       <DatePicker
         locale={ko}
         selected={date}
-        onChange={handleDateChange}
+        onChange={(selectedDate) => {
+          handleDateChange(selectedDate);
+          setIsDropDownOpen(false);
+        }}
         dateFormat=" ▼ yyyy년 MM월"
         showMonthYearPicker
-        showFullMonthYearPicker
         popperPlacement="bottom-start"
-        className="mr-[300px] cursor-pointer"
+        className="mr-[250px] cursor-pointer"
+        popperClassName="z-[1000]"
       />
       <button
         className="w-8 h-8 border-[1.5px] border-black text-center rounded-full"
