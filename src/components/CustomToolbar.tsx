@@ -45,7 +45,10 @@ export const CustomToolbar = ({
       >
         +
       </button>
-      <button className="w-16 h-8 border-[1.5px] border-black text-center rounded-full">
+      <button
+        className="w-16 h-8 border-[1.5px] border-black text-center rounded-full"
+        onClick={() => onNavigate("TODAY", new Date())}
+      >
         오늘
       </button>
     </div>
